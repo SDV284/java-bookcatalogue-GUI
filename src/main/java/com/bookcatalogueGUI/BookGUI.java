@@ -146,6 +146,21 @@ public class BookGUI extends JFrame implements ActionListener {
             } catch (BookNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
             }
+        } else if (source == saveButton) {
+            try {
+                catalogue.saveToFile("catalogue.dat");
+                JOptionPane.showMessageDialog(this, "Каталог успішно збережено у файл.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Помилка при збереженні: " + ex.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (source == loadButton) {
+            try {
+                catalogue.loadFromFile("catalogue.dat");
+                refreshList();
+                JOptionPane.showMessageDialog(this, "Каталог успішно завантажено.");
+            } catch (IOException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Помилка при завантаженні: " + ex.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
