@@ -161,6 +161,26 @@ public class BookGUI extends JFrame implements ActionListener {
             } catch (IOException | ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "Помилка при завантаженні: " + ex.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
             }
+        } else if (source == searchButton) {
+            String query = titleField.getText().trim().toLowerCase();
+            if (query.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введіть назву або її частину для пошуку.");
+                return;
+            }
+            outputArea.setText("");
+            boolean found = false;
+            for (Publication p : catalogue.getAllPublications()) {
+                if (p.getTitle().toLowerCase().contains(query)) {
+                    outputArea.append(p.toString() + "\n");
+                    found = true;
+                }
+            }
+            if (!found) {
+                outputArea.setText("Нічого не знайдено за запитом: " + query);
+            }
+        } else if (source == resetButton) {
+            refreshList();
+            clearFields();
         }
     }
 
