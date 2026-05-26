@@ -92,6 +92,61 @@ public class BookGUI extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO: Обробка подій
+        Object source = e.getSource();
+
+        if (source == addButton) {
+            try {
+                String title = titleField.getText().trim();
+                String author = authorField.getText().trim();
+                String publisher = publisherField.getText().trim();
+                String genre = genreField.getText().trim();
+                int year = Integer.parseInt(yearField.getText().trim());
+
+                if (title.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Поле 'Назва' має бути заповнене.");
+                    return;
+                }
+
+                Book book = new Book(title, year, author, publisher, genre);
+                catalogue.addPublication(book);
+                refreshList();
+                clearFields();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Введіть коректний рік видання.");
+            }
+        } else if (source == updateButton) {
+            String title = titleField.getText().trim();
+            Publication p = catalogue.findPublicationByTitle(title);
+            if (p instanceof Book) {
+                try {
+                    Book book = (Book) p;
+                    book.setAuthor(authorField.getText().trim());
+                    book.setPublisher(publisherField.getText().trim());
+                    book.setGenre(genreField.getText().trim());
+                    book.setYear(Integer.parseInt(yearField.getText().trim()));
+                    refreshList();
+                    clearFields();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Введіть коректний рік видання.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Книгу з такою назвою не знайдено для оновлення.");
+            }
+        }
+    }
+
+    private void refreshList() {
+        outputArea.setText("");
+        for (Publication p : catalogue.getAllPublications()) {
+            outputArea.append(p.toString() + "\n");
+        }
+    }
+
+    private void clearFields() {
+        titleField.setText("");
+        authorField.setText("");
+        publisherField.setText("");
+        genreField.setText("");
+        yearField.setText("");
     }
 }
