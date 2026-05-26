@@ -132,6 +132,20 @@ public class BookGUI extends JFrame implements ActionListener {
             } else {
                 JOptionPane.showMessageDialog(this, "Книгу з такою назвою не знайдено для оновлення.");
             }
+        } else if (source == deleteButton) {
+            String title = titleField.getText().trim();
+            if (title.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введіть назву книги для видалення.");
+                return;
+            }
+            try {
+                catalogue.removePublicationByTitle(title);
+                refreshList();
+                clearFields();
+                JOptionPane.showMessageDialog(this, "Книгу успішно видалено.");
+            } catch (BookNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
