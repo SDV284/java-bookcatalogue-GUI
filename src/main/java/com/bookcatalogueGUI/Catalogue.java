@@ -9,4 +9,12 @@ public class Catalogue {
     public Catalogue() {
         this.publications = new ArrayList<>();
     }
+
+    public void addPublication(Publication p) {
+        publications.add(p);
+    }
+
+    public List<Publication> getAllPublications() {
+        return new ArrayList<>(publications);
+    }
 }
