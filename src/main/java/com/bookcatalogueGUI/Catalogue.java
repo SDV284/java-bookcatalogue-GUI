@@ -17,4 +17,21 @@ public class Catalogue {
     public List<Publication> getAllPublications() {
         return new ArrayList<>(publications);
     }
+
+    public Publication findPublicationByTitle(String title) {
+        for (Publication p : publications) {
+            if (p.getTitle().equalsIgnoreCase(title.trim())) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public void removePublicationByTitle(String title) throws BookNotFoundException {
+        Publication toRemove = findPublicationByTitle(title);
+        if (toRemove == null) {
+            throw new BookNotFoundException("Публікацію з назвою \"" + title + "\" не знайдено.");
+        }
+        publications.remove(toRemove);
+    }
 }
