@@ -36,10 +36,19 @@ public class Catalogue {
         publications.remove(toRemove);
     }
 
-    @SuppressWarnings("unchecked")
     public void loadFromFile(String filename) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
-            publications = (List<Publication>) ois.readObject();
+            Object obj = ois.readObject();
+
+            if (obj instanceof List<?>) {
+                this.publications = new ArrayList<>();
+
+                for (Object item : (List<?>) obj) {
+                    if (item instanceof Publication) {
+                        this.publications.add((Publication) item);
+                    }
+                }
+            }
         }
     }
 
