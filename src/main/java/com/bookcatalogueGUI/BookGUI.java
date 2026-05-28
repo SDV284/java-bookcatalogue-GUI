@@ -95,42 +95,61 @@ public class BookGUI extends JFrame implements ActionListener {
         Object source = e.getSource();
 
         if (source == addButton) {
+            String title = titleField.getText().trim();
+            String author = authorField.getText().trim();
+            String publisher = publisherField.getText().trim();
+            String genre = genreField.getText().trim();
+            String yearStr = yearField.getText().trim();
+
+            if (title.isEmpty() || author.isEmpty() || publisher.isEmpty() || genre.isEmpty() || yearStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Усі поля мають бути заповнені для додавання книги!", "Помилка", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             try {
-                String title = titleField.getText().trim();
-                String author = authorField.getText().trim();
-                String publisher = publisherField.getText().trim();
-                String genre = genreField.getText().trim();
-                int year = Integer.parseInt(yearField.getText().trim());
-
-                if (title.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Поле 'Назва' має бути заповнене.");
-                    return;
-                }
-
+                int year = Integer.parseInt(yearStr);
                 Book book = new Book(title, year, author, publisher, genre);
                 catalogue.addPublication(book);
                 refreshList();
                 clearFields();
+                JOptionPane.showMessageDialog(this, "Книгу успішно додано.");
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Введіть коректний рік видання.");
+                JOptionPane.showMessageDialog(this, "Введіть коректный рік видання (число).", "Помилка", JOptionPane.ERROR_MESSAGE);
             }
         } else if (source == updateButton) {
             String title = titleField.getText().trim();
+            if (title.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введіть назву книги для оновления.", "Помилка", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             Publication p = catalogue.findPublicationByTitle(title);
             if (p instanceof Book) {
-                try {
-                    Book book = (Book) p;
-                    book.setAuthor(authorField.getText().trim());
-                    book.setPublisher(publisherField.getText().trim());
-                    book.setGenre(genreField.getText().trim());
-                    book.setYear(Integer.parseInt(yearField.getText().trim()));
-                    refreshList();
-                    clearFields();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Введіть коректний рік видання.");
+                Book book = (Book) p;
+                String author = authorField.getText().trim();
+                String publisher = publisherField.getText().trim();
+                String genre = genreField.getText().trim();
+                String yearStr = yearField.getText().trim();
+
+                if (!author.isEmpty()) book.setAuthor(author);
+                if (!publisher.isEmpty()) book.setPublisher(publisher);
+                if (!genre.isEmpty()) book.setGenre(genre);
+
+                if (!yearStr.isEmpty()) {
+                    try {
+                        int year = Integer.parseInt(yearStr);
+                        book.setYear(year);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Некоректний рік для оновлення. Зміни року не застосовано.", "Помилка", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                 }
+
+                refreshList();
+                clearFields();
+                JOptionPane.showMessageDialog(this, "Дані книги успішно оновлено (порожні поля залишено без змін).");
             } else {
-                JOptionPane.showMessageDialog(this, "Книгу з такою назвою не знайдено для оновлення.");
+                JOptionPane.showMessageDialog(this, "Книгу з такою назвою не знайдено для оновлення.", "Помилка", JOptionPane.ERROR_MESSAGE);
             }
         } else if (source == deleteButton) {
             String title = titleField.getText().trim();
